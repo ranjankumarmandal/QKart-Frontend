@@ -1,23 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import Register from './components/Register';
+import ipConfig from './ipConfig.json';
+import { SnackbarProvider } from 'notistack';
+import { Route, Switch } from 'react-router-dom';
+import Login from './components/Login';
+import Products from './components/Products';
+
+export const config = {
+  endpoint: `http://${ipConfig.workspaceIp}:8082/api/v1`,
+};
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='App'>
+      <Switch>
+        <Route exact path='/'>
+          <Products />
+        </Route>
+        <Route exact path='/register'>
+          <Register />
+        </Route>
+        <Route exact path='/login'>
+          <Login />
+        </Route>
+      </Switch>
     </div>
   );
 }
