@@ -12,6 +12,21 @@ const Header = ({ children, hasHiddenAuthButtons }) => {
     history.push('/', { from: 'Header' });
   };
 
+  const register = () => {
+    history.push('/register', { from: 'Header' });
+  };
+
+  const login = () => {
+    history.push('/login', { from: 'Header' });
+  };
+
+  const logout = () => {
+    localStorage.removeItem('username');
+    localStorage.removeItem('token');
+    localStorage.removeItem('balance');
+    window.location.reload();
+  };
+
   return (
     <Box className='header'>
       <Box className='header-title'>
@@ -27,7 +42,30 @@ const Header = ({ children, hasHiddenAuthButtons }) => {
           Back to explore
         </Button>
       ) : (
-        <div>register/login</div>
+        <Stack direction='row' spacing={2}>
+          {localStorage.getItem('username') ? (
+            <>
+              <Avatar alt={localStorage.getItem('username')} src='avatar.png' />
+
+              <div className='header-info'>
+                {localStorage.getItem('username')}
+              </div>
+
+              <Button variant='text' type='primary' onClick={logout}>
+                Logout
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button variant='text' onClick={login}>
+                Login
+              </Button>
+              <Button variant='contained' type='primary' onClick={register}>
+                Register
+              </Button>
+            </>
+          )}
+        </Stack>
       )}
     </Box>
   );
