@@ -16,7 +16,7 @@ const ProductCard = ({ product, handleAddToCart }) => {
     <Card className='card'>
       <CardMedia
         component='img'
-        height='440'
+        height='240'
         image={product.image}
         alt='green iguana'
       />
