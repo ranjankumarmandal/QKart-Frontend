@@ -144,6 +144,7 @@ const Products = () => {
           container
           spacing={{ xs: 2, md: 4 }}
           columns={{ xs: 4, sm: 8, md: 16 }}
+          style={{ marginTop: '10px', marginBottom: '10px' }}
         >
           {filteredProducts.map((product) => (
             <Grid item xs={2} sm={4} md={4} key={product._id}>
