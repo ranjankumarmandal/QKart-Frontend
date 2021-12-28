@@ -133,18 +133,25 @@ const Products = () => {
           </Box>
         </Grid>
       </Grid>
-      <Grid
-        container
-        spacing={{ xs: 2, md: 4 }}
-        columns={{ xs: 4, sm: 8, md: 12 }}
-      >
-        {filteredProducts.map((product) => (
-          <Grid item xs={2} sm={4} md={4} key={product._id}>
-            <ProductCard product={product} />
-          </Grid>
-        ))}
-      </Grid>
-      {/* <ProductCard product={product}/> */}
+
+      {loading ? (
+        <div style={{ textAlign: 'center', padding: '150px' }}>
+          <CircularProgress />
+          <p>Loading Products...</p>
+        </div>
+      ) : (
+        <Grid
+          container
+          spacing={{ xs: 2, md: 4 }}
+          columns={{ xs: 4, sm: 8, md: 16 }}
+        >
+          {filteredProducts.map((product) => (
+            <Grid item xs={2} sm={4} md={4} key={product._id}>
+              <ProductCard product={product} />
+            </Grid>
+          ))}
+        </Grid>
+      )}
       <Footer />
     </div>
   );
