@@ -39,18 +39,68 @@ const Products = () => {
   };
 
   const cartRef = React.createRef();
-
   const debounceTimeout = 0;
-  const products = [];
+  let products = [];
   const [loading, setLoading] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const { enqueueSnackbar } = useSnackbar();
 
-  const performAPICall = async () => {};
+  const debounceSearch = (event) => {
+    const value = event.target.value;
 
-  const performSearch = async (text) => {};
+    if (debounceTimeout) {
+      clearTimeout(debounceTimeout);
+    }
 
-  const debounceSearch = (event, debounceTimeout) => {};
+    debounceTimeout = setTimeout(() => {
+      performSearch(value);
+    }, 300);
+  };
+
+  const performSearch = async (text) => {
+    setFilteredProducts(
+      products.filter(
+        (product) =>
+          product.name.toUpperCase().includes(text.toUpperCase()) ||
+          product.category.toUpperCase().includes(text.toUpperCase())
+      )
+    );
+  };
+
+  const getProducts = async () => {
+    try {
+      let response = await axios.get(`${config.endpoint}/products`);
+      enqueueSnackbar('Welcome to QKart - By Ranjan Kumar Mandal', {
+        variant: 'success',
+      });
+      console.log(response);
+      products = response.data;
+      console.log(products.slice());
+      setFilteredProducts(products.slice());
+    } catch (error) {
+      console.log(error.response);
+      if (error.response) {
+        console.log(error.response.data.message);
+        enqueueSnackbar(error.response.data.message || 'No Products Found', {
+          variant: 'error',
+        });
+      } else {
+        enqueueSnackbar(
+          'Could not fetch products. Check that the backend is running, reachable and returns valid JSON.',
+          { variant: 'error' }
+        );
+      }
+    }
+  };
+
+  useEffect(() => {
+    getProducts();
+
+    if (localStorage.getItem('email') && localStorage.getItem('token')) {
+      setLoggedIn(true);
+    }
+  }, []);
 
   return (
     <div>
@@ -83,7 +133,18 @@ const Products = () => {
           </Box>
         </Grid>
       </Grid>
-      <ProductCard product={product} />
+      <Grid
+        container
+        spacing={{ xs: 2, md: 4 }}
+        columns={{ xs: 4, sm: 8, md: 12 }}
+      >
+        {filteredProducts.map((product) => (
+          <Grid item xs={2} sm={4} md={4} key={product._id}>
+            <ProductCard product={product} />
+          </Grid>
+        ))}
+      </Grid>
+      {/* <ProductCard product={product}/> */}
       <Footer />
     </div>
   );
