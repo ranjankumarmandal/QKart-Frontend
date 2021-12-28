@@ -138,6 +138,7 @@ const Products = () => {
           </Box>
         </Grid>
       </Grid>
+      <ProductCard product={product} />
       <Footer />
     </div>
   );
