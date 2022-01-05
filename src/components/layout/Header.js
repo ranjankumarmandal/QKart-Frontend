@@ -1,12 +1,20 @@
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useHistory } from 'react-router-dom';
-import { Avatar, Button, Stack } from '@mui/material';
+import { Search } from '@mui/icons-material';
+import {
+  Avatar,
+  Button,
+  Stack,
+  TextField,
+  InputAdornment,
+} from '@mui/material';
 import Box from '@mui/material/Box';
-import React from 'react';
+import React, { useState } from 'react';
 import './Header.css';
 
-const Header = ({ children, hasHiddenAuthButtons }) => {
+const Header = ({ children, hasHiddenAuthButtons, search }) => {
   const history = useHistory();
+  const [si, setSi] = useState('');
 
   const handleClick = () => {
     history.push('/', { from: 'Header' });
@@ -25,6 +33,11 @@ const Header = ({ children, hasHiddenAuthButtons }) => {
     localStorage.removeItem('token');
     localStorage.removeItem('balance');
     window.location.reload();
+  };
+
+  const handleSearch = (e) => {
+    setSi(e.target.value);
+    search(e.target.value);
   };
 
   return (
@@ -57,10 +70,33 @@ const Header = ({ children, hasHiddenAuthButtons }) => {
             </>
           ) : (
             <>
+              <TextField
+                className='search-desktop'
+                id='search'
+                variant='outlined'
+                name='search'
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position='end'>
+                      <Search color='primary' />
+                    </InputAdornment>
+                  ),
+                }}
+                onChange={handleSearch}
+                value={si}
+                fullWidth
+                placeholder='Search for items/categories'
+                style={{ marginRight: '350px' }}
+              />
               <Button variant='text' onClick={login}>
                 Login
               </Button>
-              <Button variant='contained' type='primary' onClick={register}>
+              <Button
+                variant='contained'
+                style={{ padding: '5px' }}
+                type='primary'
+                onClick={register}
+              >
                 Register
               </Button>
             </>
