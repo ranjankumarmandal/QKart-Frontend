@@ -43,6 +43,7 @@ const Products = () => {
   let products = [];
   const [loading, setLoading] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [productFound, setProductFound] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const { enqueueSnackbar } = useSnackbar();
 
@@ -59,18 +60,25 @@ const Products = () => {
   };
 
   const performSearch = async (text) => {
-    setFilteredProducts(
-      products.filter(
-        (product) =>
-          product.name.toUpperCase().includes(text.toUpperCase()) ||
-          product.category.toUpperCase().includes(text.toUpperCase())
-      )
-    );
+    try {
+      let res = await axios.get(
+        `${config.endpoint}/products/search?value=${text}`
+      );
+      console.log(res.data);
+      setFilteredProducts(res.data.slice());
+      setProductFound(true);
+    } catch (error) {
+      console.log('wrong data search');
+      setProductFound(false);
+    }
   };
 
   const getProducts = async () => {
     try {
+      setLoading(true);
+      setProductFound(true);
       let response = await axios.get(`${config.endpoint}/products`);
+      setLoading(false);
       enqueueSnackbar('Welcome to QKart - By Ranjan Kumar Mandal', {
         variant: 'success',
       });
@@ -104,9 +112,7 @@ const Products = () => {
 
   return (
     <div>
-      <Header>
-        {/* TODO: CRIO_TASK_MODULE_PRODUCTS - Display search bar in the header for Products page */}
-      </Header>
+      <Header search={performSearch}></Header>
 
       {/* Search view for mobiles */}
       <TextField
@@ -139,7 +145,7 @@ const Products = () => {
           <CircularProgress />
           <p>Loading Products...</p>
         </div>
-      ) : (
+      ) : productFound ? (
         <Grid
           container
           spacing={{ xs: 2, md: 4 }}
@@ -152,7 +158,13 @@ const Products = () => {
             </Grid>
           ))}
         </Grid>
+      ) : (
+        <div style={{ textAlign: 'center', padding: '150px' }}>
+          <SentimentDissatisfied />
+          <p>No products found</p>
+        </div>
       )}
+
       <Footer />
     </div>
   );
